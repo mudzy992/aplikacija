@@ -8,6 +8,6 @@ export class AppController {
   }
   @Get("world") // dodajemo link localhost:3000/world
   getWorld(): string {
-    return "hello world";
+    return "hello world edit";
   }
 }
