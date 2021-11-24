@@ -1,0 +1,75 @@
+https://youtu.be/Jw4Gz066xAs - kako se povezuje sa bazom
+
+Kako započeti novi branch na git, tj. kada radimo kao u nekom timu kako da krenemo svoj zadatak
+U donjem lijevo uglu VS (u samom uglu ima u kojemo smo brench), kada kliknemo na to pratimo korake 
+Ili u terminalu preko komandi:
+- git branch naziv brencha
+- git branch -l (izlist svih branch)
+- git checkout naziv tog branch
+
+
+Prvo što treba da uradimo ako hoćemo da koristimo bazu podataka u našem projektu jeste da uradimo 
+instalaciju modula u naš projekat (mysql)
+
+- npm i mysql
+
+nakon toga ćemo koristiti biblioteku TypeORM
+TypeORM nam omogućava da napravimo rad sa mysql bazom podataka bez potrebe da pišemo neke konkretne SQL upite.
+
+- npm i typeorm 
+
+nakon instalacije typeorm moramo da omogućimo integraciju sql i typeorm sa tim našim nestjs
+
+- npm i @nestjs/typeorm 
+
+to nam omogućava da u našem trenutno nestjs projekat integrišemo typeorm
+
+sve ove instalacije možemo da radimo separativno jedno po jednu
+a možemo i sve zajedno pomoću komande
+
+- npm i mysql typeorm @nestjs/typeorm
+
+Nakon instalacija idemo u integraciju svih modela u naš projekat, spremni za upotrebu komponenti
+
+Integracija/mogućnost korištenja MYSQL u aplikaciji
+
+1. Pravljenje konfiguracijski parametara za bazu (napraviti config folder)
+ - prvi fajl u tom folderu koji ćemo napraviti tj. koji će raditi konekciju na našu bazu podataka zvat će se DatabaseConfiguration.ts
+ (on će iz sebe exportovati jednu konstantu koja predstavljati objekat i taj objekat će imati u sebi popis parametara za vezu baze podataka)
+ - nakon što smo kreirali config file sa podacima baze podataka radimo povezivanje aplikacije
+  to radimo u našem glavnom modulu app.module.ts
+  glavni modul treba da izvrši povezivanje sa mysql pomoću import komponente
+   (import navodi spisak svih modula koji naš nestjs posjeduje)
+- s obzirom da koristim typeorm modul, potrebno je i njega importovati 
+- sve dodajemo u app.module.ts u niz imports: [TypeOrmModule.forRoot({})] (pošto on nije imporovan import { TypeOrmModule } from '@nestjs/typeorm';)
+- TypeOrmModule.froRoot{} objekat zahtjeva parametre konekcije (dodatne parametre)
+  prvo moramo reći koji je tip baze (mysql, mariadb, mssql, post)
+  podaci za povezivanje (host) - sve to imamo u database.configuration.ts
+- Da bismo učinili podatke iz database.configuration.ts vidljivim i korisnim u app.module.ts moramo uraditi sljedeće
+  importovati tu našu konstantu (koja se zove DatabaseConfiguration) 
+  kada to uradimo možemo da koristimo podatke na način
+  DatabaseConfiguration.hostname (to će biti kao da smo ukucali podataka iz database.configuration.ts pod hostname (localhost))
+  i dodati entitete entities: []
+TypeORm treba da nam omogući rad sa entitetima, tako da moramo u bazi podataka kreiati za svaku tabelu entitet
+
+Da bismo napravili entitete moramo uraditi sljedeće:
+- prvo osmisliti neki folder u kojemo ćemo držati sve te entitete 
+  entiteti su klase (moduli koji exportuju klase) koje sadrže neke dopunske informacije
+  o tome kako se ta klasa povezuje sa strukturom baze podataka
+  nakon napravljenog entiteta (folder, klasa i dodat u entities app.module.ts)
+  Taj entitet mora biti nabrojan kao jedan od dostupnih TypeORM modula sa kojima radi aplikacija
+  oni se navode ispod TypeOrmModule.forRoot({}), 
+  TypeOrmModule.forFeature([prosljeđujemo spisak svih entiteta za koji automacki treba da narpavi repozitorijum])
+  i time je zavšeno kreiranje entiteta
+
+Napraviti komponentu koja će imati komunikaciju sa bazom podataka (to ne može da bude app.controllor.ts)
+nestjs nam omogućava da automacki generiše servis (baciti ih sve u folder)
+ - nest generate service administrator services
+kada se generiše servis potrebno je entitet pridružit tom servisu
+to radimo kroz konstruktor
+ - constructor(navesti uvoz svih repozitorijuma i datim im neko ime) private readonly ime: tip{}
+
+Nakon kreiranja konstruktora kreiramo funkcije getAl, get, update, insert, delete...
+
+Da bi ga prikazali u kontoleru potrebno je dodati rutu 
+npr. @Get('api/administrator')
