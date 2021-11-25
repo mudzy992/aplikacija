@@ -41,9 +41,7 @@ import { AdministratorController } from './controllers/api/administrator.control
     }),
     TypeOrmModule.forFeature([Administrator]),
   ],
-  controllers: [
-    AppController, 
-    AdministratorController],
+  controllers: [AppController, AdministratorController],
   providers: [AdministratorService],
 })
 export class AppModule {}
