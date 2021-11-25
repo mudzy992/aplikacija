@@ -1,6 +1,6 @@
 export const DatabaseConfiguration = {
   hostname: 'localhost',
-  username: 'reactnodejs',
-  password: 'Mojalozinka!1',
+  username: 'mudzy',
+  password: 'Nije,kikiriki1',
   database: 'aplikacija',
 };
