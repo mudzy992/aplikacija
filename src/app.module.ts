@@ -2,10 +2,19 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from 'config/database.configuration';
 import { Administrator } from 'entities/administrator.entity';
-import { Category } from 'entities/categories.entitiy';
-import { AppController } from './app.controller';
+import { ArticlePrice } from 'entities/article-price.entity';
+import { ArticleFeature } from 'entities/article-feature.entity';
+import { Category } from 'entities/category.entity';
+import { AppController } from './controllers/app.controller';
+import { Article } from 'entities/article.entity';
+import { CartArticle } from 'entities/cart-article.entity';
+import { Cart } from 'entities/cart.entity';
+import { Feature } from 'entities/feature.entity';
+import { Order } from 'entities/order.entity';
+import { Photo } from 'entities/photo.entity';
+import { User } from 'entities/user.entity';
 import { AdministratorService } from './services/administrator/administrator.service';
-import { CategoryService } from './services/category/category.service';
+import { AdministratorController } from './controllers/api/administrator.controller';
 
 @Module({
   imports: [
@@ -16,11 +25,25 @@ import { CategoryService } from './services/category/category.service';
       username: DatabaseConfiguration.username,
       password: DatabaseConfiguration.password,
       database: DatabaseConfiguration.database,
-      entities: [Administrator, Category],
+      entities: [
+        Administrator,
+        ArticleFeature,
+        ArticlePrice,
+        Article,
+        CartArticle,
+        Cart,
+        Category,
+        Feature,
+        Order,
+        Photo,
+        User,
+      ],
     }),
-    TypeOrmModule.forFeature([Administrator, Category]),
+    TypeOrmModule.forFeature([Administrator]),
   ],
-  controllers: [AppController],
-  providers: [AdministratorService, CategoryService],
+  controllers: [
+    AppController, 
+    AdministratorController],
+  providers: [AdministratorService],
 })
 export class AppModule {}
