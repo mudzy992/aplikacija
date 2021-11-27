@@ -16,7 +16,7 @@ export class AdministratorController {
     // Vraća isto što i servis, obećanje da će vratiti niz administratora
     return this.administratorService.getAll();
   }
-  @Get(':id') // dodajemo link localhost:3000/world
+  @Get(':id') // dodajemo link localhost:3000/api/administrator/4(:id)
   // Potrebno je uraditi anotaciju atributa (parametra) :id
   // tu anotaciju vršimo kao ispod getById(anotacija)
   // Param je specijalna anotacija koja kaže: Ovaj parametar (u zagradi)

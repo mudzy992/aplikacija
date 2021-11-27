@@ -66,10 +66,35 @@ Napraviti komponentu koja će imati komunikaciju sa bazom podataka (to ne može 
 nestjs nam omogućava da automacki generiše servis (baciti ih sve u folder)
  - nest generate service administrator services
 kada se generiše servis potrebno je entitet pridružit tom servisu
-to radimo kroz konstruktor
+to radimo kroz konstruktor u tom servisu
  - constructor(navesti uvoz svih repozitorijuma i datim im neko ime) private readonly ime: tip{}
 
 Nakon kreiranja konstruktora kreiramo funkcije getAl, get, update, insert, delete...
 
 Da bi ga prikazali u kontoleru potrebno je dodati rutu 
 npr. @Get('api/administrator')
+
+Da bismo izbjegli kreiranje entiteta i servisa ručno za svaku relaciju u bazi podataka
+možemo da koristimo poseban alat (model), on se instalira na sljedeći način
+
+npm i typeorm-model-generator
+
+Nakon što uradimo izmjene eventualne, i sve što je bitno vezano za automacki generisane entitete
+sljedeće što moramo da uradimo jeste da ih registrujemo u app.module.ts
+
+------------------------------------
+Da bismo mogli u bazu da dodamo neki zapis, mi moramo da imamo da imamo neki mehanizam da to dopremimo od korisnika.
+HTTP protokol nam to omogućava (POST ili PUT metodom)
+Da bismo po pravili mogli da primimo te podatke, oni moraju imati tačno definisan format. za to koristimo Data Transfer Object
+DTO je klasa koja sadrzi popis svih polja, i obavezno njihivoih tipova
+koja su očekivana, i dodatno mogu biti pojašnjenja anotacijama za potrebe validacije,
+i predstavljaju oblik podataka koje aplikacija očekuje da prihvati od klijenta,
+a koje mogu da upotrebe metode kontrolera ili metoda servisa.
+Struktura DTO i baze podataka NIJE ili NE TREBA da bude ista.
+
+DTO se definiše kao obična klasa, koja u sebi ima spisak određenih polja i svih određenih vrijednosti za pojedinačna polja, 
+po potrebi ce sadržati specijalne anotacije koje se koriste za validaciju podataka koji stižu od klijenta kao sastavni dio DTO.
+
+Nakon što kreiramo Dto, trebamo da napravimo kako da prihvatimo te podatke od klijenta.
+To radimo kroz app.controllor.ts, ali da ne bi preopteretili taj glavni kontroler,
+idealno bi bilo da za svaki segment pravimo kontroler
