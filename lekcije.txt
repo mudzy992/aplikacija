@@ -98,3 +98,20 @@ po potrebi ce sadržati specijalne anotacije koje se koriste za validaciju podat
 Nakon što kreiramo Dto, trebamo da napravimo kako da prihvatimo te podatke od klijenta.
 To radimo kroz app.controllor.ts, ali da ne bi preopteretili taj glavni kontroler,
 idealno bi bilo da za svaki segment pravimo kontroler
+
+
+------------ CRUD -----------
+Da bi automatizovali ovaj sistem, potrebno je instalirati tri nova npm paketa
+-- na ubuntu sam morao sve da instaliram globalno -g
+-  npm i @nestjsx/crud @nestjsx/crud-typeorm @nestjsx/crud-request
+
+Kreiranje seta crud aplikacija
+Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (administrator.servis.ts)
+(sve je to bilo ručno napravljeno)
+
+-- Sljedeći korak jeste da napravimo folder i file za servis (template jednog servisa ima)
+-- Nakon kreiranja servisa izmjene u glavnom app modelu
+-- Sljedeće što moramo da napravimo jeste kontroler (njega ćemo praviti u folderu controllers/api)
+-- Nakon kreiranja controlera (ima template) treba ga navesti isto u glavnom modelu, kao i novi servis
+
+

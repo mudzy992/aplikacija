@@ -1,0 +1,15 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { Category } from 'entities/NazivEntiteta.entity';
+import { Repository } from 'typeorm';
+
+@Injectable()
+export class NazivService extends TypeOrmCrudService<NazivEntiteta> {
+  constructor(
+    @InjectRepository(NazivEntiteta)
+    private readonly category: Repository<NazivEntiteta>, //Čim spomenenom neki repozitorijum moramo da taj repozitoriju evidentiramo u našem osnovnom modulu (app.module.ts)
+  ) {
+    super(category);
+  }
+}

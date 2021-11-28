@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Administrator } from 'entities/administrator.entity';
-import { resolve } from 'path/posix';
 import { AddAdministratorDto } from 'src/dtos/administrator/add.administrator.dto';
 import { EditAdministratorDto } from 'src/dtos/administrator/edit.administrator.dto';
 import { ApiResponse } from 'src/misc/api.response.class';
 import { Repository } from 'typeorm';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AdministratorService {
@@ -24,15 +24,12 @@ export class AdministratorService {
   }
 
   add(data: AddAdministratorDto): Promise<Administrator | ApiResponse> {
-    const crypto = require('crypto');
     const passwordHash = crypto.createHash('sha512');
     passwordHash.update(data.password);
     const passwordHashString = passwordHash.digest('hex').toUpperCase();
-
     const newAdmin: Administrator = new Administrator();
     newAdmin.username = data.username;
     newAdmin.passwordHash = passwordHashString;
-
     return new Promise((resolve) => {
       this.administrator
         .save(newAdmin)
@@ -54,7 +51,6 @@ export class AdministratorService {
         resolve(new ApiResponse('error', -1002));
       });
     }
-    const crypto = require('crypto');
     const passwordHash = crypto.createHash('sha512');
     passwordHash.update(data.password);
     const passwordHashString = passwordHash.digest('hex').toUpperCase();
