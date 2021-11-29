@@ -113,5 +113,6 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
 -- Nakon kreiranja servisa izmjene u glavnom app modelu
 -- Sljedeće što moramo da napravimo jeste kontroler (njega ćemo praviti u folderu controllers/api)
 -- Nakon kreiranja controlera (ima template) treba ga navesti isto u glavnom modelu, kao i novi servis
+-- Kreiranje rute (u api folderu), te dodavanje relacija (join) prateći entitet te rute
 
 
