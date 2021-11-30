@@ -1,0 +1,20 @@
+{
+    "name":"ACME SSD HD11 1TB",
+    "categoryId":5,
+    "excerpt":"Kratki opis",
+    "description":"Detaljan opis",
+    "price":56.77,
+
+    // features možemo dodavati na dva načina (novi dto)
+    // "features": [
+    //     // kao niz, pozivajuci se na features, i dodavanjem polja u objekte
+    //     {"featureId": 1, "value":"1TB"},
+    //     {"featureId": 3, "value":"SSD"}
+    // ],
+    // ili direktno podrazumijevano da je pod key 1 featureId 1
+    
+    "features":{
+        "1": "1TB",
+        "3": "SSD"
+    }
+}
