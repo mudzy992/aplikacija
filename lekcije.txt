@@ -115,4 +115,6 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
 -- Nakon kreiranja controlera (ima template) treba ga navesti isto u glavnom modelu, kao i novi servis
 -- Kreiranje rute (u api folderu), te dodavanje relacija (join) prateći entitet te rute
 
-
+--------------- OBRADA SLOŽENOG SERVISA I OBRADA DTO -----------
+-- Napraviti DTO file, koji će biti zahtjevan poljima koji su potrebni za dodavanje u bazu
+-- Detaljno objašnjenje u article.service.ts

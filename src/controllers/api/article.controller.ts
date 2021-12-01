@@ -43,9 +43,13 @@ import { ArticleService } from 'src/services/article/article.service';
 export class ArticleController {
   constructor(public service: ArticleService) {}
 
-  @Post('createFull')
-  createFullArticle(@Body() data: AddArticleDto){
-    return this.service.createFullArticle(data)
+  // ANOTACIJA za kreiranje novog artikla
+  // Anotiram createFull funkciju
+  @Post('createFull') // ruta
+  // koja će da uzima isto cijeli AddArticleDto
+  // obavezno data anotirati kao Body
+  createFullArticle(@Body() data: AddArticleDto) {
+    // i vraća rezultat servisa kreiranog novog artikla na osnovu tih data
+    return this.service.createFullArticle(data);
   }
 }
- 
