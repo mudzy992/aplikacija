@@ -118,3 +118,12 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
 --------------- OBRADA SLOŽENOG SERVISA I OBRADA DTO -----------
 -- Napraviti DTO file, koji će biti zahtjevan poljima koji su potrebni za dodavanje u bazu
 -- Detaljno objašnjenje u article.service.ts
+
+---------------------------- TOKENI -----------------------------
+-- Prvo treba definisa šta uopće znači raditi sa autentifikacijom korisnika
+-- šta je uopće sesija/token (na koji način se čuvaju, kako se upotrevljavaju)
+-- Midleware (presretač)
+-- Middleware se mora registrovati u konfiguraciji našeg modula (app.module)
+-- Da bismo mogli da registrujemo middleware moramo da znamo šta on ustvari radit
+   naš middleware treba da presretne request, treba da pronađe u tom requestu neki određeni
+   header, i u tom headeru treba da pronađe neku vrijednost

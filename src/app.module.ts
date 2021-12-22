@@ -102,4 +102,8 @@ import { UserController } from './controllers/api/user.controller';
     UserService,
   ],
 })
+
+// Konzumer middleware-a
+// sve što se dešava u ovom modulu (kontroleri, sve rute),
+// mogu da budu podložene tih nekih presretača requestova
 export class AppModule {}
