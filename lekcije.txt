@@ -127,3 +127,7 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
 -- Da bismo mogli da registrujemo middleware moramo da znamo šta on ustvari radit
    naš middleware treba da presretne request, treba da pronađe u tom requestu neki određeni
    header, i u tom headeru treba da pronađe neku vrijednost
+// Posjetilac je neko ko ima pravo da izvrši neke rute (neki metod/e u nekom kontroleru)
+// bez potrebe da ima aktivnu sesiju (da nije autorizovan)
+// u tom slučaju najbolje je da se napravi poseban kontroler
+-- GENERISANJE TONEKA U auth.controller.ts

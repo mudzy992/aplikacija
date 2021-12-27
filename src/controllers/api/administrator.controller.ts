@@ -56,3 +56,5 @@ export class AdministratorController {
     return this.administratorService.editById(id, data);
   }
 }
+
+

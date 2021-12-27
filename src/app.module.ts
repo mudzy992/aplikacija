@@ -35,6 +35,7 @@ import { PhotoService } from './services/photo/photo.service';
 import { PhotoController } from './controllers/api/photo.controller';
 import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/api/user.controller';
+import { AuthController } from './controllers/api/auth.controller';
 
 @Module({
   imports: [
@@ -87,6 +88,7 @@ import { UserController } from './controllers/api/user.controller';
     OrderController,
     PhotoController,
     UserController,
+    AuthController,
   ],
   providers: [
     AdministratorService,
