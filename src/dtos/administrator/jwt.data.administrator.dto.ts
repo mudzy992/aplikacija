@@ -8,4 +8,14 @@ export class JWTDataAdministratorDto{
     // automacki će svi prethodni tokeni koji su generisani biti pogrešni
     // logično ako token kreiran sa podacima iznad (unikatni), ne sadrže podatke
     // koje smo naknadno dodali, nisu validni, tj. token nije validan
+    // konverzija u plain objekat
+    toPlainObject(){
+        return{
+            administratorId: this.administratorId,
+            username: this.username,
+            ext: this.ext,
+            ip: this.ip,
+            ua: this.ua
+        }
+    }
 }

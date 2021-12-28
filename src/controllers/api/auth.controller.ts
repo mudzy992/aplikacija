@@ -38,7 +38,7 @@ export class AuthController {
             if(!administrator){
                 // if - ako administrator ne postoji null radimo sljedeće
                 return new Promise<ApiResponse>(resolve =>
-                    resolve(new ApiResponse('error', -3001)))
+                    resolve(new ApiResponse('error', -3001, 'ne valja username')))
             }
              
             // Kada je administrator pronađen, mi ne želimo da dostavimo sve informacije o njemu
@@ -52,7 +52,7 @@ export class AuthController {
                 // Znači password koji je korisnik ukucao u login formu nije ispravan
                 return new Promise<ApiResponse>(resolve =>
                     // Vraćamo novu grešku 
-                    resolve(new ApiResponse('error', -3002)))
+                    resolve(new ApiResponse('error', -3002, 'ne valja password')))
             }
 
             // Ako smo prešli sve moguće greške koje nas mogu sačekati, ostaje nam još uspješna prijava
@@ -83,7 +83,7 @@ export class AuthController {
             jwtData.ip = req.ip.toString();
             jwtData.ua = req.headers["user-agent"];
 
-            let token: string = jwt.sign(jwtData, jwtSecret); // generisati ga ovdje
+            let token: string = jwt.sign(jwtData.toPlainObject(), jwtSecret); // generisati ga ovdje
 
             const responseObject = new LoginInfoAdministratorDto(
                 administrator.administratorId,
