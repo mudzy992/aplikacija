@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from 'config/database.configuration';
 import { Administrator } from 'entities/administrator.entity';
@@ -36,6 +36,7 @@ import { PhotoController } from './controllers/api/photo.controller';
 import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/api/user.controller';
 import { AuthController } from './controllers/api/auth.controller';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -103,9 +104,25 @@ import { AuthController } from './controllers/api/auth.controller';
     PhotoService,
     UserService,
   ],
+  exports: [
+    // zbog middleware potrebno je exportovati servis
+    // da bi svi ostali elementi koji se nalaze van okvira modula 
+    AdministratorService,
+  ]
 })
 
 // Konzumer middleware-a
 // sve što se dešava u ovom modulu (kontroleri, sve rute),
 // mogu da budu podložene tih nekih presretača requestova
-export class AppModule {}
+// potrebno je konvertovati AppModule u nestModul (implementirati)
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // Nema throw već mi treba da odredimo šta treba da radi
+    // a mi želimo da on primjeni određeni middleware
+    consumer.apply(AuthMiddleware)
+    // kada kažemo koji middleware naš konzumer treba da primjenjuje
+    // moramo da damo nekoliko izuzetaka, i spisak ruta za koje će važiti
+    .exclude('auth/*') // Izbjegni sve što počinje sa auth/*, 'assets/*', 'uploads/*'itd.
+    .forRoutes('api/*') // Ali primjeni se na sve što počinje sa api/
+  }
+}

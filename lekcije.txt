@@ -131,3 +131,11 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
 // bez potrebe da ima aktivnu sesiju (da nije autorizovan)
 // u tom slučaju najbolje je da se napravi poseban kontroler
 -- GENERISANJE TONEKA U auth.controller.ts
+
+----- MIDDLEWARES --------------------------------
+-- Kao i sve prethodno, i za middleware pravimo novi folder gdje ćemo ih smještation
+-- Prvi middleware koji ćemo napraviti je za autentifikaciju
+    U tom middleware ćemo napraviti jednu klasu koja će implementirati
+    određeni interfejs koji imaju svi mogući nestJS middlewari
+    NestMiddleware (svi middlewari koje budemo pravili, moraju implementirati ga)
+    
