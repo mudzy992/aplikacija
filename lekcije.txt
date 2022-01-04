@@ -138,4 +138,29 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
     U tom middleware ćemo napraviti jednu klasu koja će implementirati
     određeni interfejs koji imaju svi mogući nestJS middlewari
     NestMiddleware (svi middlewari koje budemo pravili, moraju implementirati ga)
-    
+    Implementirati NestModule u app.module.ts i konfigurisati rute gdje će se primjenjivati i gdje ne
+
+----- UPLOAD MEHANIZAM ---------------------------
+-- Upload datoteke je proces slanja sadržaja jedne ili više datoteka od klijenta ka serveru u okviru HTTP zahtjeva
+-- Postoji veliki broj tehnika za pripremu HTTP zahtjeva sa sadržajem datoteka
+-- Najćešće, sadržaj datoteke se salje u zahtjevu HTTP POST metodom tako da bude kodiran,
+   najčešće kao Base64 kodirani tekst, u tijelu zahtjeva koji se upućuje serveru. Tom prilikom
+   se definiše u zaglavlju zahtjeva dodatno polje koje ukazuje na tip sadržaja u tijelu HTTP zahtjeva,
+   a to je enctype sa vrijednošću "multipart/form-data" 
+-- Na strani servera, podaci se čitaju iz tijela zahtjeva, razdvajaju se kodirani sadržaji jedne
+   ili više datoteka, dekodiraju se, analiziraju i premještaju na određenu lokaciju trajnog 
+   skladištenja na memorijskom prostoru servera.
+
+   - Prvo što trebamo uraditi jeste da pogledamo u bazi podataka šta treba da imamo o našem fajlu
+     U našem slučaju, to je samo image path podatak koji trebamo sačuvati u bazi
+   - Sljedeći korak jeste da oderdimo gdje ćemo sačuvati naše fajlove
+     Potrebno je napraviti neku lokaciju kojoj će moći pristupiti i backend i frontend dio aplikacije
+     (neki izdvojeni storage)
+   - Kreirati cofig file u kojem ćemo upisati putanju za storage
+     (iz jednog prostog razloga, nekada se može desiti da će se storage lokacija zamjeniti
+     i da ne bi mjenjali linkove na svim fajlovima, samo tu izmjeniti podatak o lokaciji (main lokaciji))
+     Putanja koju upisujemo u taj fajl je relativno na naš projekat
+
+     instalacija multera
+
+     npm i @types/express -D (-D samo uzutra developmenta)
