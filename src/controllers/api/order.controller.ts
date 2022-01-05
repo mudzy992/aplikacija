@@ -16,7 +16,7 @@ import { OrderService } from 'src/services/order/order.service';
   },
   query: {
     join: {
-        cart: {
+      cart: {
         eager: true,
       },
       // Ovdje će trebati napraviti relaciju prema user, cart article

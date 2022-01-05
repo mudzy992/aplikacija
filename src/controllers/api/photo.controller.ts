@@ -17,7 +17,7 @@ import { PhotoService } from 'src/services/photo/photo.service';
   },
   query: {
     join: {
-        article: {
+      article: {
         eager: true,
       },
     },

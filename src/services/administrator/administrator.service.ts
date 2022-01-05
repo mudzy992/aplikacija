@@ -20,12 +20,12 @@ export class AdministratorService {
   }
   async getByUsername(username: string): Promise<Administrator | null> {
     const admin = await this.administrator.findOne({
-      username : username
+      username: username,
     });
-    if(admin){
+    if (admin) {
       return admin;
     }
-    return null
+    return null;
   }
 
   getById(id: number): Promise<Administrator> {

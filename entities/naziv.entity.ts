@@ -4,9 +4,9 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 // Anotacija iznad sve
 export class NazivEntiteta {
-    //primarni ključ
+  //primarni ključ
   @PrimaryGeneratedColumn({
-      //izvuči sve iz tabele
+    //izvuči sve iz tabele
     name: 'administrator_id',
     type: 'int',
     unsigned: true,
@@ -45,5 +45,5 @@ export class NazivEntiteta {
 // to radimo kroz konstruktor
 //  - constructor(navesti uvoz svih repozitorijuma i datim im neko ime) private readonly ime: tip{}
 // Nakon kreiranja konstruktora kreiramo funkcije getAl, get, update, insert, delete...
-// Da bi ga prikazali u kontoleru potrebno je dodati rutu 
+// Da bi ga prikazali u kontoleru potrebno je dodati rutu
 // npr. @Get('api/administrator')

@@ -17,7 +17,7 @@ import { UserService } from 'src/services/user/user.service';
   },
   query: {
     join: {
-        carts: {
+      carts: {
         eager: true,
       },
       // pretpostavljam da će ovdje trebati napraviti vezu da se vidi koje narudžbe ima user

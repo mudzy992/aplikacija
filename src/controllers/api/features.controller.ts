@@ -25,7 +25,7 @@ import { FeaturesService } from 'src/services/features/feature.service';
       },
       category: {
         eager: true,
-      }
+      },
     },
   },
 })

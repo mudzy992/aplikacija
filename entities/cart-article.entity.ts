@@ -28,7 +28,7 @@ export class CartArticle {
   @Column('int', { name: 'article_id', unsigned: true })
   articleId: number;
 
-  @Column('int', {unsigned: true })
+  @Column('int', { unsigned: true })
   quantity: number;
 
   @ManyToOne(() => Article, (article) => article.cartArticles, {

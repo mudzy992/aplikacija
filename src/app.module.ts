@@ -63,10 +63,10 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
     }),
     // Repozitorijumi ispod (čim ga spomenemo, moramo da ga dodamo)
     TypeOrmModule.forFeature([
-      Administrator, 
-      Category, 
-      Article, 
-      Feature, 
+      Administrator,
+      Category,
+      Article,
+      Feature,
       ArticleFeature,
       ArticlePrice,
       CartArticle,
@@ -106,9 +106,9 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
   ],
   exports: [
     // zbog middleware potrebno je exportovati servis
-    // da bi svi ostali elementi koji se nalaze van okvira modula 
+    // da bi svi ostali elementi koji se nalaze van okvira modula
     AdministratorService,
-  ]
+  ],
 })
 
 // Konzumer middleware-a
@@ -119,10 +119,11 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     // Nema throw već mi treba da odredimo šta treba da radi
     // a mi želimo da on primjeni određeni middleware
-    consumer.apply(AuthMiddleware)
-    // kada kažemo koji middleware naš konzumer treba da primjenjuje
-    // moramo da damo nekoliko izuzetaka, i spisak ruta za koje će važiti
-    .exclude('auth/*') // Izbjegni sve što počinje sa auth/*, 'assets/*', 'uploads/*'itd.
-    .forRoutes('api/*') // Ali primjeni se na sve što počinje sa api/
+    consumer
+      .apply(AuthMiddleware)
+      // kada kažemo koji middleware naš konzumer treba da primjenjuje
+      // moramo da damo nekoliko izuzetaka, i spisak ruta za koje će važiti
+      .exclude('auth/*') // Izbjegni sve što počinje sa auth/*, 'assets/*', 'uploads/*'itd.
+      .forRoutes('api/*'); // Ali primjeni se na sve što počinje sa api/
   }
 }
