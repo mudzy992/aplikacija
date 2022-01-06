@@ -164,3 +164,9 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
      instalacija multera
 
      npm i @types/express -D (-D samo uzutra developmenta)
+
+     npm i file-type (da bi isčitavali početne bajtove fajlova)
+     korišteno u dijelu upload-mehanizma za filter mimetype
+
+     https://youtu.be/ZxPZhy7caQM?list=PL-UTrxF0y8kKkQ7YPWPjYAAentBEbGA9g
+     9:10

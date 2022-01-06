@@ -1,8 +1,10 @@
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
   Param,
   Post,
+  Req,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,7 +18,8 @@ import { StorageConfig } from 'config/storage.config';
 import { PhotoService } from 'src/services/photo/photo.service';
 import { Photo } from 'entities/photo.entity';
 import { ApiResponse } from 'src/misc/api.response.class';
-
+import * as fileType from 'file-type';
+import * as fs from 'fs'; // korišteno za brisanje datoteka i fajlova
 @Controller('api/article')
 @Crud({
   model: {
@@ -104,14 +107,17 @@ export class ArticleController {
         // 1. Provjera extenzije jpg, png
         if (!file.originalname.toLowerCase().match(/\.(jpg|png)$/)) {
           // provjeravamo da li u svom orginalnom imenu ima jpg|png na kraju $
-          callback(new Error('Bad file extension'), false); // ako nema, izbaci grešku i prekini
+          req.fileFilterError = 'Bad file extension'; // Pristupamo requestu i izmišljamo mu neko novi property
+          callback(null, false); // ako nema, izbaci grešku i prekini (fatamo grešku u uploadedPhoto)
+          // Da sam u callbacku naveo grešku new Error('Bad file extension', false) - ona bi s eprikazala u backendu(konzoli)
           return;
         }
-        // 2. Provjera tipa sadržaja: image/jpeg, image/png (mimetype)
+        // 2. Provjera tipa sadržaja: image/jpeg, image/png (mimetype) (fatamo grešku u uploadedPhoto)
         if (
           !(file.mimetype.includes('jpeg') || file.mimetype.includes('png'))
         ) {
-          callback(new Error('Bad file content'), false);
+          req.fileFilterError = 'Bad file content type';
+          callback(null, false);
           return;
         }
         // ako je sve uredno vrati true
@@ -119,7 +125,7 @@ export class ArticleController {
       },
       limits: {
         files: 1, // max količina fajlova za upload
-        fieldSize: StorageConfig.photoMaxFileSize, // max veličina fajla (definisano u photo config)
+        fileSize: StorageConfig.photoMaxFileSize, // max veličina fajla (definisano u photo config)
       },
     }),
   )
@@ -128,7 +134,30 @@ export class ArticleController {
   async uploadPhoto(
     @Param('id') articleId: number,
     @UploadedFile() photo,
+    @Req() req,
   ): Promise<ApiResponse | Photo> {
+    // Fatanje grešaka filtera
+    // Pitamo da li u req.fileFilterError postoji greška, i u slučaju da postoji, vraćamo ApiResponse
+    if (req.fileFilterError) {
+      return new ApiResponse('error', -4002, req.fileFilterError); // Uključili smo u ApiResponse i message kao treći argument, req.fileFilterError
+    }
+    // Ili postavljamo pitanje, ako uopšte iz bilo kojeg razloga nije dodana fotka
+    if (!photo) {
+      return new ApiResponse('error', -4002, 'Slika nije dodana');
+    }
+    // // Pravi mimetype
+    const fileTypeResult = await fileType.fileTypeFromFile(photo.path);
+    if (!fileTypeResult) {
+      fs.unlinkSync(photo.path); // prije ApiResponse obrisati fajl
+      return new ApiResponse('error', -4002, 'Ne mogu detektovati file type');
+    }
+
+    const realMimeType = fileTypeResult.mime;
+    if (!(realMimeType.includes('jpeg') || realMimeType.includes('png'))) {
+      fs.unlinkSync(photo.path); // prije ApiResponse obrisati fajl
+      return new ApiResponse('error', -4002, 'Bad content type');
+    }
+    // Pravljenje i čuvanje umanjene sličice (thumbnail)
     // Kreirano novi photo entitet
     const newPhoto: Photo = new Photo();
     // Koji u sebi sadrži adticleId i imagePath
