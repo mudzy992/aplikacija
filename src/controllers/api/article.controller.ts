@@ -20,6 +20,8 @@ import { Photo } from 'entities/photo.entity';
 import { ApiResponse } from 'src/misc/api.response.class';
 import * as fileType from 'file-type';
 import * as fs from 'fs'; // korišteno za brisanje datoteka i fajlova
+import * as sharp from 'sharp';
+import { stopCoverage } from 'v8';
 @Controller('api/article')
 @Crud({
   model: {
@@ -158,6 +160,11 @@ export class ArticleController {
       return new ApiResponse('error', -4002, 'Bad content type');
     }
     // Pravljenje i čuvanje umanjene sličice (thumbnail)
+    // Prije svega treba kreirati folder (lokaciju), gdje ćemo smještati thumbs
+    // zbog preglednosti koda, pravljenja je funkcija za kreiranje thumb i small (ispod)
+    await this.createThumb(photo);
+    // Small photo
+    await this.createSmallImage(photo);
     // Kreirano novi photo entitet
     const newPhoto: Photo = new Photo();
     // Koji u sebi sadrži adticleId i imagePath
@@ -171,5 +178,45 @@ export class ArticleController {
       return new ApiResponse('error', -4001); // vraća grešku
     }
     return savedPhoto; // te vraća informaciju da je uspješno sačuvan
+  }
+  // funkcija za kreiranje thumb
+  async createThumb(photo){
+    const originalFilePath = photo.path;
+    const fileName = photo.filename;
+
+    const destinationFilePath = StorageConfig.photoDestination + "thumb/" + fileName;
+    await sharp(originalFilePath)
+        .resize({
+          fit: 'cover', //contain alternativa
+          width: StorageConfig.photoThumbSize.width,
+          height: StorageConfig.photoThumbSize.height,
+          background: {
+            r: 255,
+            g: 255,
+            b: 255,
+            alpha: 0.0
+          }
+        })
+        .toFile(destinationFilePath)
+  }
+  // funkcija za kreiranje small
+  async createSmallImage(photo){
+    const originalFilePath = photo.path;
+    const fileName = photo.filename;
+
+    const destinationFilePath = StorageConfig.photoDestination + "small/" + fileName;
+    await sharp(originalFilePath)
+        .resize({
+          fit: 'cover', //contain alternativa
+          width: StorageConfig.photoSmallSize.width,
+          height: StorageConfig.photoSmallSize.height,
+          background: {
+            r: 255,
+            g: 255,
+            b: 255,
+            alpha: 0.0
+          }
+        })
+        .toFile(destinationFilePath)
   }
 }

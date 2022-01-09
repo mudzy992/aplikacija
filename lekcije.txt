@@ -167,6 +167,15 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
 
      npm i file-type (da bi isčitavali početne bajtove fajlova)
      korišteno u dijelu upload-mehanizma za filter mimetype
+     Posljednja verzija koja ne izbacuje grešku kod file-type je 16.5.3
+     tako da instalacija ide ovako
+     npm i file-type@16.5.3
 
-     https://youtu.be/ZxPZhy7caQM?list=PL-UTrxF0y8kKkQ7YPWPjYAAentBEbGA9g
-     9:10
+     ------ RESIZE SLIKA BIBLIOTEKA -------
+     Da bi kreirali thumbs ili smanjili slike (veličine), potrebno je instalirati
+     sljedeću biblioteku 
+
+     npm i sharp
+
+     pomoću ove biblioteke moguće je resize, rotate, promjena boja.. sve vezano za slike
+     
