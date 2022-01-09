@@ -146,7 +146,7 @@ export class ArticleController {
       return new ApiResponse('error', -4002, 'Slika nije dodana');
     }
     // // Pravi mimetype
-    const fileTypeResult = await fileType.fileTypeFromFile(photo.path);
+    const fileTypeResult = await fileType.fromFile(photo.path);
     if (!fileTypeResult) {
       fs.unlinkSync(photo.path); // prije ApiResponse obrisati fajl
       return new ApiResponse('error', -4002, 'Ne mogu detektovati file type');

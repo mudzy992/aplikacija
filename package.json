@@ -28,7 +28,7 @@
     "@nestjsx/crud": "^5.0.0-alpha.3",
     "@nestjsx/crud-request": "^5.0.0-alpha.3",
     "@nestjsx/crud-typeorm": "^5.0.0-alpha.3",
-    "file-type": "^17.1.1",
+    "file-type": "^16.5.3",
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.3",
     "mysql": "^2.18.1",
