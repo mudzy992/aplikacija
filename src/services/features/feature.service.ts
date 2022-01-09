@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Feature } from 'entities/feature.entity';
+import { Feature } from 'src/entities/feature.entity';
 import { Repository } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 

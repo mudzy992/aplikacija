@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { Category } from 'entities/category.entity';
+import { Category } from 'src/entities/category.entity';
 import { ArticlePriceService } from 'src/services/article-price/article-price.service';
 
 @Controller('api/article-price')

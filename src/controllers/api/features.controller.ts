@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { Feature } from 'entities/feature.entity';
+import { Feature } from 'src/entities/feature.entity';
 import { FeaturesService } from 'src/services/features/feature.service';
 
 @Controller('api/feature')

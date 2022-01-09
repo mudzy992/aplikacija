@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { Photo } from 'entities/photo.entity';
+import { Photo } from 'src/entities/photo.entity';
 import { PhotoService } from 'src/services/photo/photo.service';
 
 @Controller('api/photo')

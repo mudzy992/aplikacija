@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { User } from 'entities/user.entity';
+import { User } from 'src/entities/user.entity';
 import { UserService } from 'src/services/user/user.service';
 
 @Controller('api/user')

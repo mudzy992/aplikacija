@@ -33,11 +33,10 @@ export class AuthMiddleware implements NestMiddleware {
       throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
     }
     const tokensString = tokenParts[1];
-    const jwtData: JWTDataAdministratorDto = jwt.verify(
-      tokensString,
-      jwtSecret,
-    );
-    if (!jwtData) {
+    let jwtData: JWTDataAdministratorDto;
+    try {
+      jwtData = jwt.verify(tokensString, jwtSecret);
+    } catch (e) {
       // u slučaju da ne postoji jwtData isto bacaj grešku
       throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
     }
@@ -60,7 +59,7 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     const trenutnoVrijeme = new Date().getTime() / 1000;
-    if (trenutnoVrijeme >= jwtData.ext) {
+    if (trenutnoVrijeme >= jwtData.exp) {
       // Greška ako je token istekao
       throw new HttpException('Token je istekao', HttpStatus.UNAUTHORIZED);
     }

@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
-import { ArticleFeature } from 'entities/article-feature.entity';
+import { ArticleFeature } from 'src/entities/article-feature.entity';
 import { ArticleFeatureService } from 'src/services/article-feature/article-feature.service';
 
 @Controller('api/article-feature')

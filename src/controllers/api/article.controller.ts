@@ -10,13 +10,13 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Crud } from '@nestjsx/crud';
-import { Article } from 'entities/article.entity';
+import { Article } from 'src/entities/article.entity';
 import { AddArticleDto } from 'src/dtos/article/add.article.dto';
 import { ArticleService } from 'src/services/article/article.service';
 import { diskStorage } from 'multer';
 import { StorageConfig } from 'config/storage.config';
 import { PhotoService } from 'src/services/photo/photo.service';
-import { Photo } from 'entities/photo.entity';
+import { Photo } from 'src/entities/photo.entity';
 import { ApiResponse } from 'src/misc/api.response.class';
 import * as fileType from 'file-type';
 import * as fs from 'fs'; // korišteno za brisanje datoteka i fajlova
@@ -81,7 +81,7 @@ export class ArticleController {
       // dest: StorageConfig.photos // Najjednostavniji način (definisati destinaciji u tjt.)
       storage: diskStorage({
         // i tu fotografiju pokušava da sačuva na diskStorage
-        destination: StorageConfig.photoDestination, // na lokaciji koja je definisana u StorageConfig
+        destination: StorageConfig.photo.destination, // na lokaciji koja je definisana u StorageConfig
         filename: (req, file, callback) => {
           // filename se formira tako što mi ručno pravimo funkciju koja će formirati filename
           const original: string = file.originalname;
@@ -127,7 +127,7 @@ export class ArticleController {
       },
       limits: {
         files: 1, // max količina fajlova za upload
-        fileSize: StorageConfig.photoMaxFileSize, // max veličina fajla (definisano u photo config)
+        fileSize: StorageConfig.photo.maxSize, // max veličina fajla (definisano u photo config)
       },
     }),
   )
@@ -162,9 +162,9 @@ export class ArticleController {
     // Pravljenje i čuvanje umanjene sličice (thumbnail)
     // Prije svega treba kreirati folder (lokaciju), gdje ćemo smještati thumbs
     // zbog preglednosti koda, pravljenja je funkcija za kreiranje thumb i small (ispod)
-    await this.createThumb(photo);
+    await this.createResizedImage(photo, StorageConfig.photo.resize.thumb)
     // Small photo
-    await this.createSmallImage(photo);
+    await this.createResizedImage(photo, StorageConfig.photo.resize.small)
     // Kreirano novi photo entitet
     const newPhoto: Photo = new Photo();
     // Koji u sebi sadrži adticleId i imagePath
@@ -179,43 +179,25 @@ export class ArticleController {
     }
     return savedPhoto; // te vraća informaciju da je uspješno sačuvan
   }
-  // funkcija za kreiranje thumb
-  async createThumb(photo){
+  async createResizedImage(photo, resizeSettings){
     const originalFilePath = photo.path;
     const fileName = photo.filename;
 
-    const destinationFilePath = StorageConfig.photoDestination + "thumb/" + fileName;
+    const destinationFilePath = 
+    StorageConfig.photo.destination + 
+    resizeSettings.directory + 
+    fileName;
     await sharp(originalFilePath)
         .resize({
           fit: 'cover', //contain alternativa
-          width: StorageConfig.photoThumbSize.width,
-          height: StorageConfig.photoThumbSize.height,
-          background: {
+          width: resizeSettings.width,
+          height: resizeSettings.height,
+          /* background: {
             r: 255,
             g: 255,
             b: 255,
             alpha: 0.0
-          }
-        })
-        .toFile(destinationFilePath)
-  }
-  // funkcija za kreiranje small
-  async createSmallImage(photo){
-    const originalFilePath = photo.path;
-    const fileName = photo.filename;
-
-    const destinationFilePath = StorageConfig.photoDestination + "small/" + fileName;
-    await sharp(originalFilePath)
-        .resize({
-          fit: 'cover', //contain alternativa
-          width: StorageConfig.photoSmallSize.width,
-          height: StorageConfig.photoSmallSize.height,
-          background: {
-            r: 255,
-            g: 255,
-            b: 255,
-            alpha: 0.0
-          }
+          } */ //Koristimo u slučaju da koristimo fit: 'contain' da postavi bijelu pozadinu iza
         })
         .toFile(destinationFilePath)
   }

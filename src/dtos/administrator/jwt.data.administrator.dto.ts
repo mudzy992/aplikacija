@@ -1,7 +1,7 @@
 export class JWTDataAdministratorDto {
   administratorId: number;
   username: string;
-  ext: number; //UNIX timestamp
+  exp: number; //UNIX timestamp
   ip: string;
   ua: string;
   // U slučaju da ovdje dodamo još  neki podatak koji će trebati u token
@@ -13,7 +13,7 @@ export class JWTDataAdministratorDto {
     return {
       administratorId: this.administratorId,
       username: this.username,
-      ext: this.ext,
+      ext: this.exp,
       ip: this.ip,
       ua: this.ua,
     };

@@ -82,7 +82,7 @@ export class AuthController {
     sada.setDate(sada.getDate() + 14);
     // te ga je potrebno konvertovati u timestamp
     const istekTimestamp = sada.getTime() / 1000;
-    jwtData.ext = istekTimestamp;
+    jwtData.exp = istekTimestamp;
     jwtData.ip = req.ip.toString();
     jwtData.ua = req.headers['user-agent'];
 

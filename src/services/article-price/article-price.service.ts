@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
-import { ArticlePrice } from 'entities/article-price.entity';
+import { ArticlePrice } from 'src/entities/article-price.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
