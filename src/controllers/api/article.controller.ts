@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Param,
+  Patch,
   Post,
   Req,
   UploadedFile,
@@ -22,6 +23,7 @@ import { ApiResponse } from 'src/misc/api.response.class';
 import * as fileType from 'file-type';
 import * as fs from 'fs'; // korišteno za brisanje datoteka i fajlova
 import * as sharp from 'sharp';
+import { EditArticleDto } from 'src/dtos/article/edit.article.dto';
 
 @Controller('api/article')
 @Crud({
@@ -58,6 +60,9 @@ import * as sharp from 'sharp';
       },
     },
   },
+  routes:{
+    exclude: ['updateOneBase', 'replaceOneBase', 'deleteOneBase'],
+  }
 })
 export class ArticleController {
   constructor(
@@ -73,6 +78,10 @@ export class ArticleController {
   createFullArticle(@Body() data: AddArticleDto) {
     // i vraća rezultat servisa kreiranog novog artikla na osnovu tih data
     return this.service.createFullArticle(data);
+  }
+  @Patch(':id')
+  editFullArticle(@Param('id') id: number, @Body() data: EditArticleDto){
+    return this.service.editFullArticle(id, data);
   }
   @Post(':id/uploadPhoto/') // POST http://localhost:3000/api/article/:id/uploadPhoto
   @UseInterceptors(
