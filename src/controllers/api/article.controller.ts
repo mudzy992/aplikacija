@@ -2,6 +2,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   Post,
   Req,
@@ -201,4 +202,38 @@ export class ArticleController {
         })
         .toFile(destinationFilePath)
   }
+  @Delete(':articeId/deletePhoto/:photoId') // Zahtjevamo parametre articleId i photoId
+  public async deletePhoto (
+    @Param('articeId') articleId: number, // Definišemo njihove vrijednosti
+    @Param('photoId') photoId: number){
+      const photo = await this.photoService.findOne({ // Određeni artikal mora imati sliku pod određenim id
+        articleId: articleId,
+        photoId: photoId
+      })
+      if(!photo){
+        return new ApiResponse('error', -4004,'Photo not found!') // Ako nema izbaci grešku
+      }
+      try{
+      // Brisanje velike fotografije
+      fs.unlinkSync(StorageConfig.photo.destination + 
+        photo.imagePath);
+        // brisanje thumb-a
+      fs.unlinkSync(StorageConfig.photo.destination + 
+        StorageConfig.photo.resize.thumb.directory + 
+        photo.imagePath);
+        // brisanje small fotografije
+      fs.unlinkSync(StorageConfig.photo.destination + 
+        StorageConfig.photo.resize.small.directory + 
+        photo.imagePath);
+      } catch (e) { 
+        return new ApiResponse('error', -4004,'Photo not found!') // Ako nema izbaci grešku
+      }
+        // brisanje iz baze podataka
+        // napravljen metod u photo servisu deleteById
+        const deleteResult = await this.photoService.deleteById(photo.photoId);
+        if(deleteResult.affected === 0){
+          return new ApiResponse('error', -4004,'Photo not found!')
+        }
+        return new ApiResponse('ok', 0,'One photo deleted successfully!')
+      }
 }
