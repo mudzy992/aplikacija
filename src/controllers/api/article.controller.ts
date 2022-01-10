@@ -21,7 +21,7 @@ import { ApiResponse } from 'src/misc/api.response.class';
 import * as fileType from 'file-type';
 import * as fs from 'fs'; // korišteno za brisanje datoteka i fajlova
 import * as sharp from 'sharp';
-import { stopCoverage } from 'v8';
+
 @Controller('api/article')
 @Crud({
   model: {
