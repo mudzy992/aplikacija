@@ -18,10 +18,10 @@ import { FeaturesService } from 'src/services/features/feature.service';
   query: {
     join: {
       articleFeatures: {
-        eager: true,
+        eager: false,
       },
       articles: {
-        eager: true,
+        eager: false,
       },
       category: {
         eager: true,
