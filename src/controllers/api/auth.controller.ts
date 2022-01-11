@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 // 1. Anotacija kontrolera (sa nekon rutom)
 // 2. Export klase određenog naziva
 // 3. Koristit će u sebi servis administratora
@@ -10,26 +11,30 @@ import { LoginAdministratorDto } from 'src/dtos/administrator/login.administrato
 import { ApiResponse } from 'src/misc/api.response.class';
 import { AdministratorService } from 'src/services/administrator/administrator.service';
 import * as crypto from 'crypto';
-import { LoginInfoAdministratorDto } from 'src/dtos/administrator/login.info.administrator.dto';
+import { LoginInfoDto } from 'src/dtos/auth/login.info.dto';
 import * as jwt from 'jsonwebtoken';
-import { JWTDataAdministratorDto } from 'src/dtos/administrator/jwt.data.administrator.dto';
+import { JWTDataDto } from 'src/dtos/auth/jwt.data.dto';
 import { Request } from 'express';
 import { jwtSecret } from 'config/jwt.secret';
 import { UserRegistrationDto } from 'src/dtos/user/user.registration.dto';
 import { UserService } from 'src/services/user/user.service';
+import { LoginUserDto } from 'src/dtos/user/login.user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(public administratorService: AdministratorService, public userService: UserService) {}
+  constructor(
+    public administratorService: AdministratorService,
+    public userService: UserService,
+  ) {}
   // Obzirom da se radi o Post metodu koji zahtjeva tijelo objekta,
   // potrebno je kreirati DTO (data transfer objekat)
-  @Post('login')
+  @Post('administrator/login')
   // Kada korisnik dodje @Post metodom na putanju auth/login, izvršava se doLogin metod
-  async doLogin(
+  async doAdministratorLogin(
     // Proslijeđujemo username i password putem DTO loginAdminDto
     @Body() data: LoginAdministratorDto,
     @Req() req: Request,
-  ): Promise<LoginInfoAdministratorDto | ApiResponse> {
+  ): Promise<LoginInfoDto | ApiResponse> {
     // Sada kada smo dobili informacije o korisniku
     // prvo što treba da uradimo da pokušamo da dopremimo informacije od adminu
     // sa tim određenim username
@@ -74,9 +79,10 @@ export class AuthController {
     // Prvo ćemo generisati naš token
 
     // GENERISANJE TOKENA
-    const jwtData = new JWTDataAdministratorDto();
-    jwtData.administratorId = administrator.administratorId;
-    jwtData.username = administrator.username;
+    const jwtData = new JWTDataDto();
+    jwtData.role = "administrator";
+    jwtData.id = administrator.administratorId;
+    jwtData.identity = administrator.username;
     // Da bi dobili vrijeme isteka tokena
     // uzimamo trenutni datum let sada = new Date()
     const sada = new Date();
@@ -90,7 +96,7 @@ export class AuthController {
 
     const token: string = jwt.sign(jwtData.toPlainObject(), jwtSecret); // generisati ga ovdje
 
-    const responseObject = new LoginInfoAdministratorDto(
+    const responseObject = new LoginInfoDto(
       administrator.administratorId,
       administrator.username,
       token,
@@ -101,5 +107,50 @@ export class AuthController {
   @Put('user/register')
   async userRegister(@Body() data: UserRegistrationDto) {
     return await this.userService.register(data);
+  }
+
+  @Post('user/login')
+  async doUserLogin(
+
+    @Body() data: LoginUserDto,
+    @Req() req: Request,
+  ): Promise<LoginInfoDto | ApiResponse> {
+
+    const user = await this.userService.getByEmail(
+      data.email,
+    );
+    if (!user) {
+      return new Promise<ApiResponse>((resolve) =>
+        resolve(new ApiResponse('error', -3001, 'ne valja username')),
+      );
+    }
+    const passwordHash = crypto.createHash('sha512');
+    passwordHash.update(data.password);
+    const passwordHashString = passwordHash.digest('hex').toUpperCase();
+
+    if (user.passwordHash !== passwordHashString) {
+      return new Promise<ApiResponse>((resolve) =>
+        resolve(new ApiResponse('error', -3002, 'ne valja password')),
+      );
+    }
+    const jwtData = new JWTDataDto();
+    jwtData.role = "user";
+    jwtData.id = user.userId;
+    jwtData.identity = user.email;
+    const sada = new Date();
+    sada.setDate(sada.getDate() + 14);
+    const istekTimestamp = sada.getTime() / 1000;
+    jwtData.exp = istekTimestamp;
+    jwtData.ip = req.ip.toString();
+    jwtData.ua = req.headers['user-agent'];
+
+    const token: string = jwt.sign(jwtData.toPlainObject(), jwtSecret);
+
+    const responseObject = new LoginInfoDto(
+      user.userId,
+      user.email,
+      token,
+    );
+    return new Promise((resolve) => resolve(responseObject));
   }
 }

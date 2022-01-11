@@ -108,6 +108,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
     // zbog middleware potrebno je exportovati servis
     // da bi svi ostali elementi koji se nalaze van okvira modula
     AdministratorService,
+    UserService,
   ],
 })
 

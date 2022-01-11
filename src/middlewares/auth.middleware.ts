@@ -8,7 +8,8 @@ import { NextFunction, Request, Response } from 'express';
 import { AdministratorService } from 'src/services/administrator/administrator.service';
 import * as jwt from 'jsonwebtoken';
 import { jwtSecret } from 'config/jwt.secret';
-import { JWTDataAdministratorDto } from 'src/dtos/administrator/jwt.data.administrator.dto';
+import { JWTDataDto } from 'src/dtos/auth/jwt.data.dto';
+import { UserService } from 'src/services/user/user.service';
 
 @Injectable() // Ni pod razno ovo zaboraviti
 export class AuthMiddleware implements NestMiddleware {
@@ -18,7 +19,10 @@ export class AuthMiddleware implements NestMiddleware {
   // desni klik na to imamo opciju implements da nam ubaci kod ispod (kreira nam se use metod)
   // Uraditi edit pod req, res, i next
   // Ovaj naš middleware ima Request i Response sa kojim radi, i next funkciju koju treba da pokrene
-  constructor(private readonly administratorService: AdministratorService) {}
+  constructor(
+    public administratorService: AdministratorService,
+    public userService: UserService,
+  ) {}
   async use(req: Request, res: Response, next: NextFunction) {
     if (!req.headers.authorization) {
       // ako naš header nema authorization prekidamo aplikaciju
@@ -33,7 +37,7 @@ export class AuthMiddleware implements NestMiddleware {
       throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
     }
     const tokensString = tokenParts[1];
-    let jwtData: JWTDataAdministratorDto;
+    let jwtData: JWTDataDto;
     try {
       jwtData = jwt.verify(tokensString, jwtSecret);
     } catch (e) {
@@ -50,12 +54,18 @@ export class AuthMiddleware implements NestMiddleware {
       throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
     }
 
-    const administrator = await this.administratorService.getById(
-      jwtData.administratorId,
-    );
-    if (!administrator) {
-      // Greška jwtData i request korisnik ne postoji
-      throw new HttpException('Korisnik ne postoji', HttpStatus.UNAUTHORIZED);
+    if (jwtData.role === 'administrator') {
+      const administrator = await this.administratorService.getById(jwtData.id);
+      if (!administrator) {
+        // Greška jwtData i request korisnik ne postoji
+        throw new HttpException('Korisnik ne postoji', HttpStatus.UNAUTHORIZED);
+      }
+    } else if (jwtData.role === 'user') {
+      const user = await this.userService.getById(jwtData.id);
+      if (!user) {
+        // Greška jwtData i request korisnik ne postoji
+        throw new HttpException('Korisnik ne postoji', HttpStatus.UNAUTHORIZED);
+      }
     }
 
     const trenutnoVrijeme = new Date().getTime() / 1000;
@@ -66,7 +76,6 @@ export class AuthMiddleware implements NestMiddleware {
     // Na kraju se uvijek ako je sve prošlo kako treba (ako ovaj middleware nije prekinuo aplikaciju)
     // ćemo pozvati next(); funkciju i to je to
     next();
-
     // Nakon što smo sve provjere završili, potrebo je AuthMiddleware implementirati u app.module.ts
   }
 }
