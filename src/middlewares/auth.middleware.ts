@@ -75,6 +75,7 @@ export class AuthMiddleware implements NestMiddleware {
     }
     // Na kraju se uvijek ako je sve prošlo kako treba (ako ovaj middleware nije prekinuo aplikaciju)
     // ćemo pozvati next(); funkciju i to je to
+    req.token = jwtData;
     next();
     // Nakon što smo sve provjere završili, potrebo je AuthMiddleware implementirati u app.module.ts
   }

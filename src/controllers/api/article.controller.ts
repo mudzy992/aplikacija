@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -24,6 +25,8 @@ import * as fileType from 'file-type';
 import * as fs from 'fs'; // korišteno za brisanje datoteka i fajlova
 import * as sharp from 'sharp';
 import { EditArticleDto } from 'src/dtos/article/edit.article.dto';
+import { AllowToRoles } from 'src/misc/allow.to.roles.descriptor';
+import { RoleCheckedGuard } from 'src/misc/role.checker.guard';
 
 @Controller('api/article')
 @Crud({
@@ -73,17 +76,24 @@ export class ArticleController {
   // ANOTACIJA za kreiranje novog artikla
   // Anotiram createFull funkciju
   @Post('createFull') // ruta
+  @UseGuards(RoleCheckedGuard)
+  @AllowToRoles('administrator')
   // koja će da uzima isto cijeli AddArticleDto
   // obavezno data anotirati kao Body
   createFullArticle(@Body() data: AddArticleDto) {
     // i vraća rezultat servisa kreiranog novog artikla na osnovu tih data
     return this.service.createFullArticle(data);
   }
+
   @Patch(':id')
+  @UseGuards(RoleCheckedGuard)
+  @AllowToRoles('administrator')
   editFullArticle(@Param('id') id: number, @Body() data: EditArticleDto){
     return this.service.editFullArticle(id, data);
   }
   @Post(':id/uploadPhoto/') // POST http://localhost:3000/api/article/:id/uploadPhoto
+  @UseGuards(RoleCheckedGuard)
+  @AllowToRoles('administrator')
   @UseInterceptors(
     // Prihvata rad sa presretačima
     FileInterceptor('photo', {
@@ -212,6 +222,8 @@ export class ArticleController {
         .toFile(destinationFilePath)
   }
   @Delete(':articeId/deletePhoto/:photoId') // Zahtjevamo parametre articleId i photoId
+  @UseGuards(RoleCheckedGuard)
+  @AllowToRoles('administrator')
   public async deletePhoto (
     @Param('articeId') articleId: number, // Definišemo njihove vrijednosti
     @Param('photoId') photoId: number){
