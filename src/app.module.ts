@@ -28,7 +28,7 @@ import { ArticlePriceService } from './services/article-price/article-price.serv
 import { CartArticleService } from './services/cart-article/cart-article.service';
 import { CartArticleController } from './controllers/api/cart-article.controller';
 import { CartService } from './services/cart/cart.service';
-import { CartController } from './controllers/api/cart.controller';
+import { UserCartController } from './controllers/api/user.cart.controller';
 import { OrderService } from './services/order/order.service';
 import { OrderController } from './controllers/api/order.controller';
 import { PhotoService } from './services/photo/photo.service';
@@ -85,7 +85,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
     ArticleFeatureController,
     ArticlePriceController,
     CartArticleController,
-    CartController,
+    UserCartController,
     OrderController,
     PhotoController,
     UserController,
