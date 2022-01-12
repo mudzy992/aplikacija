@@ -1,8 +1,15 @@
 import { NestFactory } from '@nestjs/core'; //iz cijelog ovog paketa mi importujemo klasu NestFactory
-import { AppModule } from './app.module'; 
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { StorageConfig } from 'config/storage.config';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.useStaticAssets(StorageConfig.photo.destination, {
+    prefix: StorageConfig.photo.urlPrefix,
+    maxAge: StorageConfig.photo.maxAge,
+    index: false,
+  });
   await app.listen(3003);
 }
 bootstrap();
