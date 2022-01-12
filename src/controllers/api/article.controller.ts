@@ -64,7 +64,20 @@ import { RoleCheckedGuard } from 'src/misc/role.checker.guard';
     },
   },
   routes:{
-    exclude: ['updateOneBase', 'replaceOneBase', 'deleteOneBase'],
+    only: [
+      'getOneBase',
+      'getManyBase'
+    ],
+    getOneBase:{
+      decorators: [
+        UseGuards(RoleCheckedGuard), AllowToRoles('administrator', 'user')
+      ]
+    },
+    getManyBase: {
+      decorators: [
+        UseGuards(RoleCheckedGuard), AllowToRoles('administrator', 'user')
+      ]
+    }
   }
 })
 export class ArticleController {
@@ -75,7 +88,7 @@ export class ArticleController {
 
   // ANOTACIJA za kreiranje novog artikla
   // Anotiram createFull funkciju
-  @Post('createFull') // ruta
+  @Post() // ruta
   @UseGuards(RoleCheckedGuard)
   @AllowToRoles('administrator')
   // koja će da uzima isto cijeli AddArticleDto

@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, Put, SetMetadata, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { Administrator } from 'src/entities/administrator.entity';
 import { AddAdministratorDto } from 'src/dtos/administrator/add.administrator.dto';
 import { EditAdministratorDto } from 'src/dtos/administrator/edit.administrator.dto';
@@ -15,7 +23,7 @@ export class AdministratorController {
   ) {}
 
   @Get() // ovdje sada idu metode, parametri
-  /* @SetMetadata('allow_to_roles', ['administrator']) // a može i ova opcija */ 
+  /* @SetMetadata('allow_to_roles', ['administrator']) // a može i ova opcija */
   @UseGuards(RoleCheckedGuard)
   @AllowToRoles('administrator')
   getAll(): Promise<Administrator[]> {
@@ -47,7 +55,7 @@ export class AdministratorController {
   // kada radimo dodavanje novih zapisa koristi se PUT metod
   // PUT metod se izvršava nad istom glavnom rutom
 
-  @Put()
+  @Post()
   // Otvori taj neki link localhost:3003/api/administrator/
   // i uzmi iz tijela tog linka data
   // u formatu koji je definisan u Dto (AddAdministratorDto)
@@ -57,7 +65,7 @@ export class AdministratorController {
     return this.administratorService.add(data);
   }
 
-  @Post(':id')
+  @Patch(':id')
   @UseGuards(RoleCheckedGuard)
   @AllowToRoles('administrator')
   edit(
