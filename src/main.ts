@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core'; //iz cijelog ovog paketa mi importujemo klasu NestFactory
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { StorageConfig } from 'config/storage.config';
@@ -10,6 +11,9 @@ async function bootstrap() {
     maxAge: StorageConfig.photo.maxAge,
     index: false,
   });
+
+  // VALIDACIJA
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(3003);
 }
 bootstrap();

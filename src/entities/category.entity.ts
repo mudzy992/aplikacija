@@ -9,6 +9,8 @@ import {
 } from 'typeorm';
 import { Article } from './article.entity';
 import { Feature } from './feature.entity';
+import * as Validator from 'class-validator';
+import { IsString } from 'class-validator';
 
 @Index('uq_category_name', ['name'], { unique: true })
 @Index('uq_category_image_path', ['imagePath'], { unique: true })
@@ -22,9 +24,15 @@ export class Category {
     unique: true,
     length: 32,
   })
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(5, 32)
   name: string;
 
   @Column('varchar', { name: 'image_path', unique: true, length: 128 })
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(1, 128)
   imagePath: string;
 
   @Column('int', {
