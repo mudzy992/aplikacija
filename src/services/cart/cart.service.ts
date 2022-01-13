@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Patch } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Article } from 'src/entities/article.entity';
 import { CartArticle } from 'src/entities/cart-article.entity';
@@ -58,7 +58,11 @@ export class CartService {
     newCart.userId = userId;
     return await this.cart.save(newCart);
   }
-  async addArticleToCart(cartId: number, articleId: number, qiantity: number) {
+  async addArticleToCart(
+    cartId: number,
+    articleId: number,
+    qiantity: number,
+  ): Promise<Cart> {
     let record: CartArticle = await this.cartArticle.findOne({
       cartId: cartId,
       articleId: articleId,
@@ -71,16 +75,38 @@ export class CartService {
     } else {
       record.quantity += qiantity;
     }
-    return await this.cartArticle.save(record);
+    await this.cartArticle.save(record);
+
+    return this.getById(cartId);
   }
   async getById(cartId: number): Promise<Cart> {
     return await this.cart.findOne(cartId, {
       relations: [
         'user',
         'cartArticles',
-        'cartArticles.artile',
-        'cartArticles.artile.category',
+        'cartArticles.article',
+        'cartArticles.article.category',
+        'cartArticles.article.articlePrices',
       ],
     });
+  }
+  async changeQuantity(
+    cartId: number,
+    articleId: number,
+    newQuantity: number,
+  ): Promise<Cart> {
+    const record: CartArticle = await this.cartArticle.findOne({
+      cartId: cartId,
+      articleId: articleId,
+    });
+    if (record) {
+      record.quantity = newQuantity;
+      if (record.quantity === 0) {
+        await this.cartArticle.delete(record.cartArticleId);
+      } else {
+        await this.cartArticle.save(record);
+      }
+    }
+    return await this.getById(cartId);
   }
 }
