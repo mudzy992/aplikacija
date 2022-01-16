@@ -30,7 +30,6 @@ import { CartArticleController } from './controllers/api/cart-article.controller
 import { CartService } from './services/cart/cart.service';
 import { UserCartController } from './controllers/api/user.cart.controller';
 import { OrderService } from './services/order/order.service';
-import { OrderController } from './controllers/api/order.controller';
 import { PhotoService } from './services/photo/photo.service';
 import { PhotoController } from './controllers/api/photo.controller';
 import { UserService } from './services/user/user.service';
@@ -40,6 +39,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { MailConfig } from 'config/mail.config';
 import { OrderMailer } from './services/order/order.mailer.service';
+import { AdministratorOrderController } from './controllers/api/administrator.order.controller';
 
 @Module({
   imports: [
@@ -101,7 +101,7 @@ import { OrderMailer } from './services/order/order.mailer.service';
     ArticlePriceController,
     CartArticleController,
     UserCartController,
-    OrderController,
+    AdministratorOrderController,
     PhotoController,
     UserController,
     AuthController,
