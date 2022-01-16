@@ -186,3 +186,11 @@ Da bismo imali nekakav mehanizam upravljanja entitetima treba nam servis (admini
 
      nakon toga definisati ga u main.ts
      definišemo ga u main.ts globalno, jer ne želimo (a možemo) nad svakim metodom implemetiramo koji pipe da koristi
+
+     ------ EMAIL ----------
+     Da bismo omogućili slanje emaila potrebno je da instaliramo komponentu koja će nam omogućiti slanje mailova
+
+     npm i @nestjs-modules/mailer nodemailer
+
+     nakon toga ju je potrebno uključiti u aplikaciju, tj. u našem glavnom app.module,
+     te u dijelu gdje smo uključili ostale module (TypeOrmModule npr.) dodajemo i mailer

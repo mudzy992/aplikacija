@@ -37,6 +37,9 @@ import { UserService } from './services/user/user.service';
 import { UserController } from './controllers/api/user.controller';
 import { AuthController } from './controllers/api/auth.controller';
 import { AuthMiddleware } from './middlewares/auth.middleware';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { MailConfig } from 'config/mail.config';
+import { OrderMailer } from './services/order/order.mailer.service';
 
 @Module({
   imports: [
@@ -75,6 +78,18 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
       Photo,
       User,
     ]),
+    MailerModule.forRoot({
+      transport:
+        'smtps://' +
+        MailConfig.username +
+        ':' +
+        MailConfig.password +
+        '@' +
+        MailConfig.hostname,
+      defaults: {
+        from: MailConfig.senderEmail,
+      },
+    }),
   ],
   controllers: [
     AppController,
@@ -103,6 +118,7 @@ import { AuthMiddleware } from './middlewares/auth.middleware';
     OrderService,
     PhotoService,
     UserService,
+    OrderMailer,
   ],
   exports: [
     // zbog middleware potrebno je exportovati servis
