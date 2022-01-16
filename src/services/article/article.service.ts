@@ -173,12 +173,12 @@ export class ArticleService extends TypeOrmCrudService<Article> {
     }
 
     if (data.priceMax && typeof data.priceMax === 'number') {
-      builder.andWhere('ap.price <= :max', { min: data.priceMax });
+      builder.andWhere('ap.price <= :max', { max: data.priceMax });
     }
 
     if (data.features && data.features.length > 0) {
       for (const feature of data.features) {
-        builder.andWhere('af.featuredId = :fId AND af.value IN (:fVals)', {
+        builder.andWhere('af.featureId = :fId AND af.value IN (:fVals)', {
           fId: feature.featureId,
           fVals: feature.values,
         });
