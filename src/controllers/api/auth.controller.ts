@@ -19,6 +19,7 @@ import { jwtSecret } from 'config/jwt.secret';
 import { UserRegistrationDto } from 'src/dtos/user/user.registration.dto';
 import { UserService } from 'src/services/user/user.service';
 import { LoginUserDto } from 'src/dtos/user/login.user.dto';
+import { JwtRefreshDataDto } from 'src/dtos/auth/jwt.refresh.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -83,14 +84,7 @@ export class AuthController {
     jwtData.role = "administrator";
     jwtData.id = administrator.administratorId;
     jwtData.identity = administrator.username;
-    // Da bi dobili vrijeme isteka tokena
-    // uzimamo trenutni datum let sada = new Date()
-    const sada = new Date();
-    // i taj trenutni datum uvećavamo za 14 dana
-    sada.setDate(sada.getDate() + 14);
-    // te ga je potrebno konvertovati u timestamp
-    const istekTimestamp = sada.getTime() / 1000;
-    jwtData.exp = istekTimestamp;
+    jwtData.exp = this.getDatePlus(60 * 60 * 24 * 31);
     jwtData.ip = req.ip.toString();
     jwtData.ua = req.headers['user-agent'];
 
@@ -100,6 +94,8 @@ export class AuthController {
       administrator.administratorId,
       administrator.username,
       token,
+      "",
+      ""
     );
     return new Promise((resolve) => resolve(responseObject));
   }
@@ -137,20 +133,39 @@ export class AuthController {
     jwtData.role = "user";
     jwtData.id = user.userId;
     jwtData.identity = user.email;
-    const sada = new Date();
-    sada.setDate(sada.getDate() + 14);
-    const istekTimestamp = sada.getTime() / 1000;
-    jwtData.exp = istekTimestamp;
+    jwtData.exp = this.getDatePlus(60 * 5);
     jwtData.ip = req.ip.toString();
     jwtData.ua = req.headers['user-agent'];
 
     const token: string = jwt.sign(jwtData.toPlainObject(), jwtSecret);
 
+    const jwtRefreshData = new JwtRefreshDataDto();
+    jwtRefreshData.role = jwtData.role;
+    jwtRefreshData.id = jwtData.id;
+    jwtRefreshData.identity = jwtData.identity;
+    jwtRefreshData.exp = this.getDatePlus(60 * 60 * 24 * 31);
+    jwtRefreshData.ip = jwtData.ip;
+    jwtRefreshData.ua = jwtData.ua;
+
+    const refreshToken: string = jwt.sign(jwtRefreshData.toPlainObject(), jwtSecret);
+
     const responseObject = new LoginInfoDto(
       user.userId,
       user.email,
       token,
+      refreshToken,
+      this.getIsoDate(jwtRefreshData.exp)
     );
     return new Promise((resolve) => resolve(responseObject));
+  }
+  
+  private getDatePlus(numberOfSeconds: number):number {
+    return new Date().getTime() / 1000 + numberOfSeconds;
+  }
+
+  private getIsoDate(timestamp: number): string{
+    const date = new Date();
+    date.setTime(timestamp * 1000);
+    return date.toISOString();
   }
 }
