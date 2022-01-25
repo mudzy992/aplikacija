@@ -36,46 +36,47 @@ export class AuthMiddleware implements NestMiddleware {
     if (tokenParts.length !== 2) {
       throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
     }
-    const tokensString = tokenParts[1];
+    const tokenString = tokenParts[1];
+
     let jwtData: JWTDataDto;
+
     try {
-      jwtData = jwt.verify(tokensString, jwtSecret);
+      jwtData = jwt.verify(tokenString, jwtSecret);
     } catch (e) {
-      // u slučaju da ne postoji jwtData isto bacaj grešku
-      throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
     }
-    // A ako sve prođe, potrebno je provjeriti jwtData
+
+    if (!jwtData) {
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+    }
+
     if (jwtData.ip !== req.ip.toString()) {
-      // Greška jwtData i request ip
-      throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
     }
+
     if (jwtData.ua !== req.headers['user-agent']) {
-      // Greška jwtData i request ua
-      throw new HttpException('Ne valja token', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
     }
 
     if (jwtData.role === 'administrator') {
       const administrator = await this.administratorService.getById(jwtData.id);
       if (!administrator) {
-        // Greška jwtData i request korisnik ne postoji
-        throw new HttpException('Korisnik ne postoji', HttpStatus.UNAUTHORIZED);
+        throw new HttpException('Account not found', HttpStatus.UNAUTHORIZED);
       }
     } else if (jwtData.role === 'user') {
       const user = await this.userService.getById(jwtData.id);
       if (!user) {
-        // Greška jwtData i request korisnik ne postoji
-        throw new HttpException('Korisnik ne postoji', HttpStatus.UNAUTHORIZED);
+        throw new HttpException('Account not found', HttpStatus.UNAUTHORIZED);
       }
     }
 
-    const trenutnoVrijeme = new Date().getTime() / 1000;
-    if (trenutnoVrijeme >= jwtData.exp) {
-      // Greška ako je token istekao
-      throw new HttpException('Token je istekao', HttpStatus.UNAUTHORIZED);
+    const trenutniTimestamp = new Date().getTime() / 1000;
+    if (trenutniTimestamp >= jwtData.exp) {
+      throw new HttpException('The token has expired', HttpStatus.UNAUTHORIZED);
     }
-    // Na kraju se uvijek ako je sve prošlo kako treba (ako ovaj middleware nije prekinuo aplikaciju)
-    // ćemo pozvati next(); funkciju i to je to
+
     req.token = jwtData;
+
     next();
     // Nakon što smo sve provjere završili, potrebo je AuthMiddleware implementirati u app.module.ts
   }

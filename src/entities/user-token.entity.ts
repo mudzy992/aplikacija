@@ -22,7 +22,7 @@ export class UserToken {
   @Validator.IsString()
   token: string;
 
-  @Column({ type: 'datetime', name: 'expires_at' })
+  @Column({ type: 'datetime', name: 'expire_at' })
   expiresAt: string;
 
   @Column({ type: 'tinyint', name: 'is_valid', default: 1 })

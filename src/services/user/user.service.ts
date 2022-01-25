@@ -67,13 +67,20 @@ export class UserService extends TypeOrmCrudService<User> {
 
     return await this.userToken.save(userToken);
   }
+
   async getUserToken(token: string): Promise<UserToken> {
-    return await this.userToken.findOne({ token: token });
+    return await this.userToken.findOne({
+      token: token,
+    });
   }
+
   async invalidateToken(token: string): Promise<UserToken | ApiResponse> {
-    const userToken = await this.userToken.findOne({ token: token });
+    const userToken = await this.userToken.findOne({
+      token: token,
+    });
+
     if (!userToken) {
-      return new ApiResponse('error', -10001, 'Nema tokena');
+      return new ApiResponse('error', -10001, 'No such refresh token!');
     }
 
     userToken.isValid = 0;
@@ -82,10 +89,14 @@ export class UserService extends TypeOrmCrudService<User> {
 
     return await this.getUserToken(token);
   }
+
   async invalidateUserTokens(
     userId: number,
-  ): Promise<UserToken | ApiResponse[]> {
-    const userTokens = await this.userToken.find({ userId: userId });
+  ): Promise<(UserToken | ApiResponse)[]> {
+    const userTokens = await this.userToken.find({
+      userId: userId,
+    });
+
     const results = [];
 
     for (const userToken of userTokens) {
