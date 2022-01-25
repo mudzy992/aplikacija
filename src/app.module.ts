@@ -41,6 +41,7 @@ import { MailConfig } from 'config/mail.config';
 import { OrderMailer } from './services/order/order.mailer.service';
 import { AdministratorOrderController } from './controllers/api/administrator.order.controller';
 import { UserToken } from './entities/user-token.entity';
+import { AdministratorToken } from './entities/administrator-token.entity';
 
 @Module({
   imports: [
@@ -63,7 +64,8 @@ import { UserToken } from './entities/user-token.entity';
         Order,
         Photo,
         User,
-        UserToken
+        UserToken,
+        AdministratorToken,
       ],
     }),
     // Repozitorijumi ispod (čim ga spomenemo, moramo da ga dodamo)
@@ -80,6 +82,7 @@ import { UserToken } from './entities/user-token.entity';
       Photo,
       User,
       UserToken,
+      AdministratorToken,
     ]),
     MailerModule.forRoot({
       transport:

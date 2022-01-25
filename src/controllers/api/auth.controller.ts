@@ -21,6 +21,7 @@ import { UserService } from "src/services/user/user.service";
 import { LoginUserDto } from "src/dtos/user/login.user.dto";
 import { JwtRefreshDataDto } from "src/dtos/auth/jwt.refresh.dto";
 import { UserRefreshTokenDto } from "src/dtos/auth/user.refresh.token.dto";
+import { AdministratorRefreshTokenDto } from "src/dtos/auth/administrator.refresh.token.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -85,21 +86,99 @@ export class AuthController {
     jwtData.role = "administrator";
     jwtData.id = administrator.administratorId;
     jwtData.identity = administrator.username;
-    jwtData.exp = this.getDatePlus(60 * 60 * 24 * 31);
+    jwtData.exp = this.getDatePlus(60 * 5);
     jwtData.ip = req.ip.toString();
     jwtData.ua = req.headers['user-agent'];
 
     const token: string = jwt.sign(jwtData.toPlainObject(), jwtSecret); // generisati ga ovdje
 
+    const jwtRefreshData = new JwtRefreshDataDto();
+        jwtRefreshData.role = jwtData.role;
+        jwtRefreshData.id = jwtData.id;
+        jwtRefreshData.identity = jwtData.identity;
+        jwtRefreshData.exp = this.getDatePlus(60 * 60 * 24 * 31);
+        jwtRefreshData.ip = jwtData.ip;
+        jwtRefreshData.ua = jwtData.ua;
+
+        const refreshToken: string = jwt.sign(jwtRefreshData.toPlainObject(), jwtSecret);
+
     const responseObject = new LoginInfoDto(
       administrator.administratorId,
       administrator.username,
       token,
-      "",
-      ""
-    );
-    return new Promise((resolve) => resolve(responseObject));
-  }
+      refreshToken,
+            this.getIsoDate(jwtRefreshData.exp),
+        );
+
+        await this.administratorService.addToken(
+            administrator.administratorId,
+            refreshToken,
+            this.getDatabaseDateFormat(this.getIsoDate(jwtRefreshData.exp))
+        );
+
+        return new Promise(resolve => resolve(responseObject));
+    }
+
+  @Post('administrator/refresh') // http://localhost:3000/auth/administrator/refresh/
+    async administratorTokenRefresh(@Req() req: Request, @Body() data: AdministratorRefreshTokenDto): Promise<LoginInfoDto | ApiResponse> {
+        const administratorToken = await this.administratorService.getAdministratorToken(data.token);
+
+        if (!administratorToken) {
+            return new ApiResponse("error", -10002, "No such refresh token!");
+        }
+
+        if (administratorToken.isValid === 0) {
+            return new ApiResponse("error", -10003, "The token is no longer valid!");
+        }
+
+        const sada = new Date();
+        const datumIsteka = new Date(administratorToken.expiresAt);
+
+        if (datumIsteka.getTime() < sada.getTime()) {
+            return new ApiResponse("error", -10004, "The token has expired!");
+        }
+
+        let jwtRefreshData: JwtRefreshDataDto;
+
+        try {
+            jwtRefreshData = jwt.verify(data.token, jwtSecret);
+        } catch (e) {
+            throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+        }
+
+        if (!jwtRefreshData) {
+            throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+        }
+
+        if (jwtRefreshData.ip !== req.ip.toString()) {
+            throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+        }
+
+        if (jwtRefreshData.ua !== req.headers["user-agent"]) {
+            throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+        }
+
+        const jwtData = new JWTDataDto();
+        jwtData.role = jwtRefreshData.role;
+        jwtData.id = jwtRefreshData.id;
+        jwtData.identity = jwtRefreshData.identity;
+        jwtData.exp = this.getDatePlus(60 * 5);
+        jwtData.ip = jwtRefreshData.ip;
+        jwtData.ua = jwtRefreshData.ua;
+
+        const token: string = jwt.sign(jwtData.toPlainObject(), jwtSecret);
+
+        const responseObject = new LoginInfoDto(
+            jwtData.id,
+            jwtData.identity,
+            token,
+            data.token,
+            this.getIsoDate(jwtRefreshData.exp),
+        );
+
+        return responseObject;
+    }
+    
   // REGISTRACIJA NOVOG KORISNIKA
   @Post('user/register')
   async userRegister(@Body() data: UserRegistrationDto) {
