@@ -35,3 +35,4 @@ lerna-debug.log*
 !.vscode/extensions.json
 config/database.configuration.ts
 config/mail.config.ts
+config/database.configuration.ts

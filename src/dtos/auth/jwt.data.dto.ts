@@ -2,7 +2,7 @@ export class JWTDataDto {
   role: 'administrator' | 'user';
   id: number;
   identity: string;
-  exp: number; //UNIX timestamp
+  exp: number;
   ip: string;
   ua: string;
   // U slučaju da ovdje dodamo još  neki podatak koji će trebati u token
@@ -15,9 +15,9 @@ export class JWTDataDto {
       role: this.role,
       id: this.id,
       identity: this.identity,
-      ext: this.exp,
+      exp: this.exp,
       ip: this.ip,
       ua: this.ua,
-    }
+    };
   }
 }
