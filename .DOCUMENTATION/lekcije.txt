@@ -1,6 +1,11 @@
 Otvoriti folder u VS-u
 
-npm init 
+npm init - zanemarivo
+
+https://www.youtube.com/watch?v=oGHD9JED8b4 -> Ovdje kreće sve
+npm i -g @nestjs/cli
+
+nest new ImeAplikacije
 
 i pratiti wizard
 https://youtu.be/Jw4Gz066xAs - kako se povezuje sa bazom
@@ -83,6 +88,10 @@ Da bismo izbjegli kreiranje entiteta i servisa ručno za svaku relaciju u bazi p
 možemo da koristimo poseban alat (model), on se instalira na sljedeći način
 
 npm i typeorm-model-generator
+
+typeorm-model-generator ukucati u terminal, i pratiti wizard
+
+- engine "mssql", "postgre", "mysql", "mariadb", "oracle", "sqlite"
 
 Nakon što uradimo izmjene eventualne, i sve što je bitno vezano za automacki generisane entitete
 sljedeće što moramo da uradimo jeste da ih registrujemo u app.module.ts
