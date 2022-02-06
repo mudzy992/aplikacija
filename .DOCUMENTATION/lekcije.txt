@@ -1,3 +1,8 @@
+Otvoriti folder u VS-u
+
+npm init 
+
+i pratiti wizard
 https://youtu.be/Jw4Gz066xAs - kako se povezuje sa bazom
 
 Kako započeti novi branch na git, tj. kada radimo kao u nekom timu kako da krenemo svoj zadatak
