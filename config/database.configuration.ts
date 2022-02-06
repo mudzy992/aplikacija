@@ -1,5 +1,5 @@
 export const DatabaseConfiguration = {
-  hostname: 'localhost',
+  hostname: '127.0.0.1',
   username: 'mudzy',
   password: 'Nije,kikiriki1',
   database: 'aplikacija',
