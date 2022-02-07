@@ -1,7 +1,7 @@
 export const StorageConfig = {
   photo: {
     destination: '../storage/photos/',
-    urlPrefix: 'assets/photos/',
+    urlPrefix: '/assets/photos/',
     maxSize: 1024 * 1024 * 3, // u bajtovima = 3MB
     maxAge: 1000 * 60 * 60 * 24 * 7,
     resize: {
