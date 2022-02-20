@@ -10,7 +10,6 @@ import {
 import { Article } from './article.entity';
 import { Feature } from './feature.entity';
 import * as Validator from 'class-validator';
-import { IsString } from 'class-validator';
 
 @Index('uq_category_name', ['name'], { unique: true })
 @Index('uq_category_image_path', ['imagePath'], { unique: true })
