@@ -103,6 +103,7 @@ export class ArticleService extends TypeOrmCrudService<Article> {
       );
     }
     const newPriceString: string = Number(data.price).toFixed(2); // toFixed(2) konvertujemo na dvije decimale
+    
     const lastPrice =
       existingArticle.articlePrices[existingArticle.articlePrices.length - 1]
         .price;
