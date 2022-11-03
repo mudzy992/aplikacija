@@ -115,6 +115,10 @@ idealno bi bilo da za svaki segment pravimo kontroler
 
 
 ------------ CRUD -----------
+
+https://github.com/nestjsx/crud
+
+
 Da bi automatizovali ovaj sistem, potrebno je instalirati tri nova npm paketa
 -- na ubuntu sam morao sve da instaliram globalno -g
 -  npm i @nestjsx/crud @nestjsx/crud-typeorm @nestjsx/crud-request
